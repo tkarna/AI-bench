@@ -155,18 +155,18 @@ def time_gpu(
         return time_gpu_jit(fn, args, jit_backend, warmup=warmup, rep=rep)
     # --- End alternative timing. ---
 
-    # Buffer used to flush L2 cache between kernel runs.
-    cache_size = 256 * 1024 * 1024
-    cache = torch.empty(cache_size, dtype=torch.int8, device=device)
+    # # Buffer used to flush L2 cache between kernel runs.
+    # cache_size = 256 * 1024 * 1024
+    # cache = torch.empty(cache_size, dtype=torch.int8, device=device)
 
-    # Dummy matmul to fill GPU pipeline - helps with short-lived kernel timing.
-    # Without this, fast kernels may complete before the CPU can issue the end event.
-    dummy_a = torch.randn(1024, 1024, dtype=torch.float32, device=device)
-    dummy_b = torch.randn(1024, 1024, dtype=torch.float32, device=device)
+    # # Dummy matmul to fill GPU pipeline - helps with short-lived kernel timing.
+    # # Without this, fast kernels may complete before the CPU can issue the end event.
+    # dummy_a = torch.randn(1024, 1024, dtype=torch.float32, device=device)
+    # dummy_b = torch.randn(1024, 1024, dtype=torch.float32, device=device)
 
     # Warmup: load kernels and stabilize GPU state.
     for _ in range(warmup):
-        cache.zero_()
+        # cache.zero_()
         fn(*args)
     torch.accelerator.synchronize()
 
@@ -177,7 +177,7 @@ def time_gpu(
     # Benchmark loop.
     for i in range(rep):
         # Flush L2 cache.
-        cache.zero_()
+        # cache.zero_()
 
         # Fill GPU pipeline with a dummy untimed kernel.
         #
@@ -186,7 +186,7 @@ def time_gpu(
         # to enqueue timer events before the benchmarked kernel finishes execution.
         # It is particularly helpful to increase measurement accuracy of short-lived
         # workloads e.g., GEMM with small dimensions.
-        torch.matmul(dummy_a, dummy_b)
+        # torch.matmul(dummy_a, dummy_b)
 
         # Time the main kernel.
         start_events[i].record()
