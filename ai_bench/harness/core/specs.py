@@ -271,7 +271,12 @@ def get_inputs(
 
         dtype_str = str(dtype)
         if "float" in dtype_str:
-            tensor = torch.randn(shape, dtype=dtype, device=device)
+            # tensor = torch.randn(shape, dtype=dtype, device=device)
+            # init floats as random values in the [-0.5, 0.5] range
+            torch.manual_seed(42)  # set random seed
+            tensor = torch.nn.init.uniform_(
+                torch.empty(shape, dtype=dtype, device=device), -0.5, 0.5
+            )
         elif "int" in dtype_str:
             value_range = input_range(variant, input_entry)
             value_range = list(map(int, value_range))
