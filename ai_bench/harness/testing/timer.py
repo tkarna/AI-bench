@@ -149,11 +149,11 @@ def time_gpu(
         f"Invalid accelerator {current_device}, expected {device.type}"
     )
 
-    # --- Alternative timing: measure inside the compiled MLIR module. ---
-    # Comment out this block to fall back to the event-based timing below.
-    if jit_backend is not None:
-        return time_gpu_jit(fn, args, jit_backend, warmup=warmup, rep=rep)
-    # --- End alternative timing. ---
+    # # --- Alternative timing: measure inside the compiled MLIR module. ---
+    # # Comment out this block to fall back to the event-based timing below.
+    # if jit_backend is not None:
+    #     return time_gpu_jit(fn, args, jit_backend, warmup=warmup, rep=rep)
+    # # --- End alternative timing. ---
 
     # # Buffer used to flush L2 cache between kernel runs.
     # cache_size = 256 * 1024 * 1024
